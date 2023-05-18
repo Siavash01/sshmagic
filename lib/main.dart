@@ -14,6 +14,10 @@ void main() {
   runApp(SMagic());
 }
 
+void connectToShuttle(String addr, String port, String username, String pass) {
+  shell.run('sshuttle --dns --no-latency-control -r $username@$addr:$port 0/0 -x $addr');
+}
+
 // the main UI
 class SMagic extends StatelessWidget {
   // text controllers to read input from TextFields
@@ -77,10 +81,7 @@ class SMagic extends StatelessWidget {
                 port = portController.text;
                 username = usernameController.text;
                 pass = passwordController.text;
-                // TODO check if input is valid before passing to sshuttle
-                // perform sshuttle command (run a proccess)
-                // TODO handle shell exceptios
-                shell.run('sshuttle --dns --no-latency-control -r $username@$addr:$port 0/0 -x $addr');
+                connectToShuttle(addr, port, username, pass);
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.green,
