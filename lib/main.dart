@@ -14,8 +14,18 @@ void main() {
   runApp(SMagic());
 }
 
+bool portValid(String port){
+  var intPort = 0;
+  try {
+     intPort = int.parse(port);
+  } catch (e) {}
+  return intPort == 22 || (1023 < intPort && intPort < 65536);
+}
+bool addrValid(String addr){
+  return RegExp(r"^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$").hasMatch(addr);
+}
 void connectToShuttle(String addr, String port, String username, String pass) {
-  shell.run('sshuttle --dns --no-latency-control -r $username@$addr:$port 0/0 -x $addr');
+  if(addrValid(addr) && portValid(port) && username != '' && pass != '') shell.run('sshuttle --dns --no-latency-control -r $username@$addr:$port 0/0 -x $addr');
 }
 
 // the main UI
@@ -29,6 +39,7 @@ class SMagic extends StatelessWidget {
   // variables to save the input information
   late String addr, port, username, pass;
 
+  // Custom input
   TextField CInput(TextEditingController objController, [String? objLabel, String? objHint, bool? objObscureText]) {
     if (objLabel == null) objLabel = '';
     if (objHint == null) objHint = '';
