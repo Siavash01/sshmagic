@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:io'; 
 import 'package:process_run/shell.dart';
 
 var shell = Shell();
 
 void main() {
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    if (kReleaseMode) exit(1);
+  };
   runApp(SMagic());
 }
 
@@ -54,7 +60,7 @@ class SMagic extends StatelessWidget {
               obscureText: true,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Port',
+                labelText: 'Password',
               )
             ),
             ElevatedButton(
