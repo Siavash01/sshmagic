@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'dart:io'; 
+import 'dart:io';
 import 'package:process_run/shell.dart';
 
 // os shell to execute shell command sshuttle
@@ -21,83 +21,79 @@ class SMagic extends StatelessWidget {
   final TextEditingController portController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
   // variables to save the input information
   late String addr, port, username, pass;
+
+  TextField CInput(TextEditingController objController, [String? objLabel, String? objHint, bool? objObscureText]) {
+    if (objLabel == null) objLabel = '';
+    if (objHint == null) objHint = '';
+    if (objObscureText == null) objObscureText = false;
+    return TextField(
+        controller: objController,
+        obscureText: objObscureText,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: objLabel,
+          hintText: objHint,
+        ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.dark(),
       home: Scaffold(
-        appBar: AppBar(
-          title: Text("SSH MAGIC"),
-        ),
-        body: Padding(  
-          padding: EdgeInsets.all(15),
-          child: Column(
-            // input ssh information from TextFields
-            // TODO add margin to input fiels and connect button
-            // TODO set maximum size for input fiels and connect button
-            children: <Widget> [ // vertically show input fiels and connect button
-            TextField(
-              controller: addressController,
-              obscureText: false,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Address',
-                hintText: 'x.x.x.x',
-              ),
-            ),
-            TextField(
-              controller: portController,
-              obscureText: false,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Port',
-              ),
-            ),
-            TextField(
-              controller: usernameController,
-              obscureText: false,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Username',
-              ),
-            ),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Password',
-              )
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // read input on button click
-                addr = addressController.text;
-                port = portController.text;
-                username = usernameController.text;
-                pass = passwordController.text;
-                // TODO check if input is valid before passing to sshuttle
-                // perform sshuttle command (run a proccess)
-                // TODO handle shell exceptios
-                shell.run('sshuttle --dns --no-latency-control -r $username@$addr:$port 0/0 -x $addr');
-              },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.green,
-                onPrimary: Colors.white,
-                elevation: 20,  // Elevation
-                shadowColor: Colors.black, // Shadow Color
-              ),
-              // connect to sshuttle when this button is clicked
-              child: const Text(
-                'Connect',
-                style: TextStyle(fontSize: 40),
-              ),
-            )
-            ]
-          )
-        )
-      ),
+          appBar: AppBar(
+            backgroundColor: Color.fromRGBO(80, 30, 55, 1),
+            title: Text("SSH MAGIC"),
+          ),
+          body: Padding(
+              padding: EdgeInsets.all(15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Column(
+                      // input ssh information from TextFields
+                      // TODO add margin to input fiels and connect button
+                      // TODO set maximum size for input fiels and connect button
+                      children: <Widget>[
+                        // vertically show input fiels and connect button
+                        CInput(addressController, 'Address', 'x.x.x.x'),
+                        SizedBox(height: 10),
+                        CInput(portController, 'Port'),
+                        SizedBox(height: 10),
+                        CInput(usernameController, 'Username'),
+                        SizedBox(height: 10),
+                        CInput(passwordController, 'password', '',true),
+                      ]),
+                  ElevatedButton(
+                    onPressed: () {
+                      // read input on button click
+                      addr = addressController.text;
+                      port = portController.text;
+                      username = usernameController.text;
+                      pass = passwordController.text;
+                      // TODO check if input is valid before passing to sshuttle
+                      // perform sshuttle command (run a proccess)
+                      // TODO handle shell exceptios
+                      shell.run(
+                          'sshuttle --dns --no-latency-control -r $username@$addr:$port 0/0 -x $addr');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.green,
+                      onPrimary: Colors.white,
+                      elevation: 20, // Elevation
+                      shadowColor: Colors.black, // Shadow Color
+                    ),
+                    // connect to sshuttle when this button is clicked
+                    child: const Text(
+                      'Connect',
+                      style: TextStyle(fontSize: 40),
+                    ),
+                  )
+                ],
+              ))),
     );
   }
 }
