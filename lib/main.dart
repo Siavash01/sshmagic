@@ -32,7 +32,7 @@ bool addrValid(String addr) {
 
 void connectToShuttle(String addr, String port, String username, String pass) {
   if (addrValid(addr) && portValid(port) && username != '' && pass != '')
-    shell.run('sshuttle --dns --no-latency-control -r $username@$addr:$port 0/0 -x $addr');
+    shell.run('sshuttle --dns --no-latency-control -r $username:$pass@$addr:$port 0/0 -x $addr');
 }
 
 // the main UI
