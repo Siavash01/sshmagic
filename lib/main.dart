@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:io'; 
 import 'package:process_run/shell.dart';
 
+// os shell to execute shell command sshuttle
 var shell = Shell();
 
 void main() {
@@ -13,11 +14,14 @@ void main() {
   runApp(SMagic());
 }
 
+// the main UI
 class SMagic extends StatelessWidget {
+  // text controllers to read input from TextFields
   final TextEditingController addressController = TextEditingController();
   final TextEditingController portController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  // variables to save the input information
   late String addr, port, username, pass;
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,10 @@ class SMagic extends StatelessWidget {
         body: Padding(  
           padding: EdgeInsets.all(15),
           child: Column(
-            children: <Widget> [
+            // input ssh information from TextFields
+            // TODO add margin to input fiels and connect button
+            // TODO set maximum size for input fiels and connect button
+            children: <Widget> [ // vertically show input fiels and connect button
             TextField(
               controller: addressController,
               obscureText: false,
@@ -65,10 +72,14 @@ class SMagic extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
+                // read input on button click
                 addr = addressController.text;
                 port = portController.text;
                 username = usernameController.text;
                 pass = passwordController.text;
+                // TODO check if input is valid before passing to sshuttle
+                // perform sshuttle command (run a proccess)
+                // TODO handle shell exceptios
                 shell.run('sshuttle --dns --no-latency-control -r $username@$addr:$port 0/0 -x $addr');
               },
               style: ElevatedButton.styleFrom(
@@ -77,6 +88,7 @@ class SMagic extends StatelessWidget {
                 elevation: 20,  // Elevation
                 shadowColor: Colors.black, // Shadow Color
               ),
+              // connect to sshuttle when this button is clicked
               child: const Text(
                 'Connect',
                 style: TextStyle(fontSize: 40),
