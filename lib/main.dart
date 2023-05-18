@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:process_run/shell.dart';
 
-void main() => runApp(SMagic());
+var shell = Shell();
+
+void main() {
+  runApp(SMagic());
+}
 
 class SMagic extends StatelessWidget {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController portController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  late String addr, port, username, pass;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -51,13 +57,25 @@ class SMagic extends StatelessWidget {
                 labelText: 'Port',
               )
             ),
-            TextButton(
-              style: ButtonStyle(
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+            ElevatedButton(
+              onPressed: () {
+                addr = addressController.text;
+                port = portController.text;
+                username = usernameController.text;
+                pass = passwordController.text;
+                shell.run('sshuttle --dns --no-latency-control -r $username@$addr:$port 0/0 -x $addr');
+              },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.green,
+                onPrimary: Colors.white,
+                elevation: 20,  // Elevation
+                shadowColor: Colors.black, // Shadow Color
               ),
-              onPressed: () { },
-              child: Text('TextButton'),
-            ),
+              child: const Text(
+                'Connect',
+                style: TextStyle(fontSize: 40),
+              ),
+            )
             ]
           )
         )
