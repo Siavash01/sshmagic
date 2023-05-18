@@ -81,8 +81,7 @@ class SMagic extends StatelessWidget {
                       // TODO check if input is valid before passing to sshuttle
                       // perform sshuttle command (run a proccess)
                       // TODO handle shell exceptios
-                      shell.run(
-                          'sshuttle --dns --no-latency-control -r $username@$addr:$port 0/0 -x $addr');
+                      connectToShuttle(addr, port, username, pass);
                     },
                     style: ElevatedButton.styleFrom(
                       primary: Colors.green,
