@@ -3,27 +3,19 @@ import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:process_run/shell.dart';
+
+// my modules
+import 'profile.dart';
 
 var shell = Shell();
 
-void main() async {
+void main() {
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
     if (kReleaseMode) exit(1);
   };
   runApp(SMagic());
-  // opening a connection do database. create new db in not exists
-  final database = openDatabase(
-    join(await getDatabasesPath(), 'sshprofiles.db'),
-    onCreate: (db, version) {
-      return db.execute(
-        'CREATE TABLE profiles(id INTEGER PRIMARY KEY, add TEXT, port INTEGER, username TEXT, pass TEXT)'
-      );
-    },
-    version: 1,
-  );
 }
 
 // validation
@@ -45,23 +37,6 @@ void connectToShuttle(String addr, String port, String username, String pass) {
   if (addrValid(addr) && portValid(port) && username != '' && pass != '') {
     shell.run('sshuttle --dns --no-latency-control -r $username:$pass@$addr:$port 0/0 -x $addr');
   }
-}
-
-// db record and fiels specified as a class
-class SProfile {
-  final int id;
-  final String addr;
-  final String port;
-  final String username;
-  final String pass;
-  
-  const SProfile({
-    required this.id,
-    required this.addr,
-    required this.port,
-    required this.username,
-    required this.pass,
-  });
 }
 
 // the main UI
