@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'package:process_run/shell.dart';
-import 'package:desktop_window/desktop_window.dart';
 
 var shell = Shell();
 
 void main() {
-  // for window size but don't work
-  DesktopWindow.setMinWindowSize(Size(400, 400));
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
     if (kReleaseMode) exit(1);
