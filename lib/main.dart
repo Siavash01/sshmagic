@@ -1,22 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'dart:io';
 import 'dart:async';
+import 'dart:convert';
 import 'package:path/path.dart';
-import 'package:process_run/shell.dart';
+import 'package:path_provider/path_provider.dart';
+// import 'package:json_annotation/json_annotation.dart';
 
-// my modules
+// TODO create ssh profile page
+
 import 'profile.dart';
-
-var shell = Shell();
 
 void main() {
   FlutterError.onError = (details) {
     FlutterError.presentError(details);
     if (kReleaseMode) exit(1);
   };
+
+  ProfileStorage ps = ProfileStorage();
+  // read profles file synchronously. This is done to get last connected profile for default profile
+  String jsonString = File('assets/profile.json').readAsStringSync();
+  Map<String, dynamic> profileMap = jsonDecode(jsonString);
+
   runApp(SMagic());
 }
+
+// this class is going to be used in ssh profiles page
+// pass the class directly to the profiles page Widget
+class ProfileStorage {
+  // return document directory
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  // returns specified file
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/profile.json');
+  }
+
+  // returns the contents of the specified file as String
+  Future<String> readString() async {
+    try {
+      final file = await _localFile;
+
+      final contents = await file.readAsString();
+      return contents;
+    } catch (e) {
+      return '';
+    }
+  }
+}
+
+dynamic jsonDecode(String source,
+        {Object? reviver(Object? key, Object? value)?}) =>
+    json.decode(source, reviver: reviver);
 
 // validation
 bool portValid(String port) {
@@ -30,13 +71,6 @@ bool portValid(String port) {
 bool addrValid(String addr) {
   return RegExp(r"^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
       .hasMatch(addr);
-}
-
-// this function is called when connect button is clicked
-void connectToShuttle(String addr, String port, String username, String pass) {
-  if (addrValid(addr) && portValid(port) && username != '' && pass != '') {
-    shell.run('sshuttle --dns --no-latency-control -r $username:$pass@$addr:$port 0/0 -x $addr');
-  }
 }
 
 // the main UI
@@ -105,10 +139,8 @@ class SMagic extends StatelessWidget {
                         port = portController.text;
                         username = usernameController.text;
                         pass = passwordController.text;
-                        // TODO check if input is valid before passing to sshuttle
-                        // perform sshuttle command (run a proccess)
-                        // TODO handle shell exceptios
-                        connectToShuttle(addr, port, username, pass);
+                        // TODO user should connect to remote server via tunnel when this button is clicked
+                        ;
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.all(16.0),
