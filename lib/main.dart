@@ -18,7 +18,6 @@ void main() {
     if (kReleaseMode) exit(1);
   };
 
-  ProfileStorage ps = ProfileStorage();
   // read profles file synchronously. This is done to get last connected profile for default profile
   String jsonString = File('assets/profile.json').readAsStringSync();
   Map<String, dynamic> profileMap = jsonDecode(jsonString);
