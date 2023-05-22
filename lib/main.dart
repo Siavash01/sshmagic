@@ -75,10 +75,29 @@ bool addrValid(String addr) {
 class SMagic extends StatefulWidget {
   const SMagic( { super.key } );
 
+  @override
   State<SMagic> createState() => _SMagicState();
 }
 
 class _SMagicState extends State<SMagic> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.dark(),
+      home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color.fromRGBO(80, 30, 55, 1),
+            title: Text("SSH MAGIC"),
+          ),
+          body: HomeScreen()),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  HomeScreen({Key? key}) : super(key: key);
+
   // text controllers to read input from TextFields
   final TextEditingController addressController = TextEditingController();
   final TextEditingController portController = TextEditingController();
@@ -105,65 +124,59 @@ class _SMagicState extends State<SMagic> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark(),
-      home: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Color.fromRGBO(80, 30, 55, 1),
-            title: Text("SSH MAGIC"),
-          ),
-          body: Padding(
-            padding: EdgeInsets.all(15),
-            child: Center(
-              child: Container(
-                width: 400,
-                height: 600,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(
-                      // input ssh information from TextFields
-                      // TODO add margin to input fiels and connect button
-                      // TODO set maximum size for input fiels and connect button
-                        children: <Widget>[
-                          // vertically show input fiels and connect button
-                          CInput(addressController, 'Address', 'x.x.x.x'),
-                          SizedBox(height: 10),
-                          CInput(portController, 'Port'),
-                          SizedBox(height: 10),
-                          CInput(usernameController, 'Username'),
-                          SizedBox(height: 10),
-                          CInput(passwordController, 'password', '', true),
-                        ]),
-                    ElevatedButton(
-                      onPressed: () {
-                        // read input on button click
-                        addr = addressController.text;
-                        port = portController.text;
-                        username = usernameController.text;
-                        pass = passwordController.text;
-                        // TODO user should connect to remote server via tunnel when this button is clicked
-                        ;
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(16.0),
-                        primary: Colors.blue[600],
-                        onPrimary: Colors.white,
-                        elevation: 20, // Elevation
-                        shadowColor: Colors.black, // Shadow Color
-                      ),
-                      // connect to sshuttle when this button is clicked
-                      child: const Text(
-                        'Connect',
-                        style: TextStyle(fontSize: 40),
-                      ),
-                    )
-                  ],
-                ),
+  Widget build(BuildContext contex) {
+    return Container(
+      child: Padding(
+          padding: EdgeInsets.all(15),
+          child: Center(
+            child: Container(
+              width: 400,
+              height: 600,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Column(
+                    // input ssh information from TextFields
+                    // TODO add margin to input fiels and connect button
+                    // TODO set maximum size for input fiels and connect button
+                      children: <Widget>[
+                        // vertically show input fiels and connect button
+                        CInput(addressController, 'Address', 'x.x.x.x'),
+                        SizedBox(height: 10),
+                        CInput(portController, 'Port'),
+                        SizedBox(height: 10),
+                        CInput(usernameController, 'Username'),
+                        SizedBox(height: 10),
+                        CInput(passwordController, 'password', '', true),
+                      ]),
+                  ElevatedButton(
+                    onPressed: () {
+                      // read input on button click
+                      addr = addressController.text;
+                      port = portController.text;
+                      username = usernameController.text;
+                      pass = passwordController.text;
+                      // TODO user should connect to remote server via tunnel when this button is clicked
+                      ;
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.all(16.0),
+                      primary: Colors.blue[600],
+                      onPrimary: Colors.white,
+                      elevation: 20, // Elevation
+                      shadowColor: Colors.black, // Shadow Color
+                    ),
+                    // connect to sshuttle when this button is clicked
+                    child: const Text(
+                      'Connect',
+                      style: TextStyle(fontSize: 40),
+                    ),
+                  )
+                ],
               ),
             ),
-          )),
+          ),
+        )
     );
   }
 }
