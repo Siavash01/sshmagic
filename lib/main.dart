@@ -72,8 +72,13 @@ bool addrValid(String addr) {
       .hasMatch(addr);
 }
 
-// the main UI
-class SMagic extends StatelessWidget {
+class SMagic extends StatefulWidget {
+  const SMagic( { super.key } );
+
+  State<SMagic> createState() => _SMagicState();
+}
+
+class _SMagicState extends State<SMagic> {
   // text controllers to read input from TextFields
   final TextEditingController addressController = TextEditingController();
   final TextEditingController portController = TextEditingController();
