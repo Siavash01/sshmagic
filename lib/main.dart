@@ -13,21 +13,16 @@ import 'package:path_provider/path_provider.dart';
 import 'profile.dart';
 
 void main() {
-  FlutterError.onError = (details) {
-    FlutterError.presentError(details);
-    if (kReleaseMode) exit(1);
-  };
-
-  // read profles file synchronously. This is done to get last connected profile for default profile
-  String jsonString = File('assets/profile.json').readAsStringSync();
-  Map<String, dynamic> profileMap = jsonDecode(jsonString);
-
   runApp(SMagic());
 }
 
 // this class is going to be used in ssh profiles page
 // pass the class directly to the profiles page Widget
 class ProfileStorage {
+  dynamic jsonDecode(String source,
+          {Object? reviver(Object? key, Object? value)?}) =>
+      json.decode(source, reviver: reviver);
+
   // return document directory
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -52,24 +47,6 @@ class ProfileStorage {
       return '';
     }
   }
-}
-
-dynamic jsonDecode(String source,
-        {Object? reviver(Object? key, Object? value)?}) =>
-    json.decode(source, reviver: reviver);
-
-// validation
-bool portValid(String port) {
-  var intPort = 0;
-  try {
-    intPort = int.parse(port);
-  } catch (e) {}
-  return intPort == 22 || (1023 < intPort && intPort < 65536);
-}
-
-bool addrValid(String addr) {
-  return RegExp(r"^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
-      .hasMatch(addr);
 }
 
 class SMagic extends StatefulWidget {
@@ -106,6 +83,20 @@ class HomeScreen extends StatelessWidget {
 
   // variables to save the input information
   late String addr, port, username, pass;
+ 
+  // validation
+  bool portValid(String port) {
+    var intPort = 0;
+    try {
+      intPort = int.parse(port);
+    } catch (e) {}
+    return intPort == 22 || (1023 < intPort && intPort < 65536);
+  }
+
+  bool addrValid(String addr) {
+    return RegExp(r"^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
+        .hasMatch(addr);
+  }
 
   // Custom input
   TextField CInput(TextEditingController objController,
