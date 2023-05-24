@@ -153,23 +153,17 @@ class _SMagicState extends State<SMagic> {
         // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Text('Drawer Header'),
+          const SizedBox(
+            height: 64,
+            child: DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(80, 30, 55, 1),
+              ),
+              child: Text('SSH Magic'),
+            )
           ),
           ListTile(
-            title: const Text('Item 1'),
-            onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: const Text('Item 2'),
+            title: const Text('SSH Profile'),
             onTap: () {
               // Update the state of the app
               // ...
@@ -190,7 +184,7 @@ class _SMagicState extends State<SMagic> {
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Color.fromRGBO(80, 30, 55, 1),
-          title: Text("SSH MAGIC"),
+          title: Text("SSH Magic"),
         ),
         body: Column(
           children: <Widget> [
