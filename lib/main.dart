@@ -59,6 +59,7 @@ class SMagic extends StatefulWidget {
 
 class _SMagicState extends State<SMagic> {
   String connectButtonText = 'Connect';
+  bool isConnected = false;
 
   // text controllers to read input from TextFields
   final TextEditingController addressController = TextEditingController();
@@ -69,16 +70,31 @@ class _SMagicState extends State<SMagic> {
   // variables to save the input information
   late String addr, port, username, pass;
 
+  void connectButtonAction() {
+    if (!isConnected) {
+      // read input on button click
+      addr = addressController.text;
+      port = portController.text;
+      username = usernameController.text;
+      pass = passwordController.text;
+      // TODO user should connect to remote server via tunnel
+      setState(() {
+        connectButtonText = 'Disconnect';
+      });
+      isConnected = true;
+    } else {
+      setState(() {
+        // TODO user should disconnect from remote server
+        connectButtonText = 'Connect';
+        isConnected = false;
+      });
+    }
+  }
+
   ElevatedButton connectButton() {
     return ElevatedButton(
       onPressed: () {
-        // read input on button click
-        addr = addressController.text;
-        port = portController.text;
-        username = usernameController.text;
-        pass = passwordController.text;
-        // TODO user should connect to remote server via tunnel when this button is clicked
-        ;
+        connectButtonAction();
       },
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.all(16.0),
@@ -88,8 +104,8 @@ class _SMagicState extends State<SMagic> {
         shadowColor: Colors.black, // Shadow Color
       ),
       // connect to sshuttle when this button is clicked
-      child: const Text(
-        'Connect',
+      child: Text(
+        connectButtonText,
         style: TextStyle(fontSize: 40),
       ),
     );
