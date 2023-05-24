@@ -84,12 +84,14 @@ class _SMagicState extends State<SMagic> {
         .hasMatch(addr);
   }
 
-  bool usernameValid(String username) {
-    return true;
+  bool usernameValid(String username) { 
+    return RegExp(r"^([0-9]|[A-z]|_|\.|%)+$")
+        .hasMatch(username);
   }
 
   bool passValid(String pass) {
-    return true;
+    return RegExp(r"^([0-9]|[A-z]|_|\.|%|!|@|#|\$|\^|&|\*|\(|\)|\+)+$")
+        .hasMatch(pass);
   }
 
   void connectButtonAction() {
