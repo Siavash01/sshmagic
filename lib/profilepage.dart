@@ -7,7 +7,45 @@ import 'dart:convert';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
+// my own modules
+import 'profile.dart';
+
+// this class is going to be used in ssh profiles page
+// pass the class directly to the profiles page Widget
+class ProfileStorage {
+  dynamic jsonDecode(String source,
+          {Object? reviver(Object? key, Object? value)?}) =>
+      json.decode(source, reviver: reviver);
+
+  // return document directory
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  // returns specified file
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/profile.json');
+  }
+
+  // returns the contents of the specified file as String
+  Future<String> readString() async {
+    try {
+      final file = await _localFile;
+
+      final contents = await file.readAsString();
+      return contents;
+    } catch (e) {
+      return '';
+    }
+  }
+}
+
 class ProfilePage extends StatelessWidget {
+  Color customColor = Color.fromRGBO(80, 30, 55, 1);
+
   // text controllers to read input from TextFields
   final TextEditingController addressController = TextEditingController();
   final TextEditingController portController = TextEditingController();
@@ -64,10 +102,29 @@ class ProfilePage extends StatelessWidget {
         controller: objController,
         obscureText: objObscureText,
         decoration: InputDecoration(
-          border: OutlineInputBorder(),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(width: 3, color: customColor),
+          ),
           labelText: objLabel,
           hintText: objHint,
         ));
+  }
+
+  Widget interface() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget> [
+        Container(),
+        CInput(addressController, 'Address', 'x.x.x.x'),
+        CInput(portController, 'Port'),
+        CInput(usernameController, 'Username'),
+        CInput(passwordController, 'Password'),
+      ]
+    );
+  }
+
+  void addProfileButtonAction() {
+    ;
   }
 
   @override
@@ -76,7 +133,26 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('SSH Magic'),
       ),
-      body: Container(),
+      body: Column(
+        children: <Widget> [
+          Flexible(
+            child: interface(),
+          ),
+          Flexible(
+            child: Center(
+              child: Ink(decoration:ShapeDecoration(color: customColor, shape:CircleBorder()),
+                child:IconButton(
+                iconSize:40,
+                onPressed: () => addProfileButtonAction(), 
+                icon: Icon(
+                  Icons.add,
+                  color:Colors.white,
+                ),
+              )
+            ),),
+          ), 
+        ]
+      )
     );
   }
 }

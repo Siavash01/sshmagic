@@ -17,39 +17,6 @@ void main() {
   runApp(SMagic());
 }
 
-// this class is going to be used in ssh profiles page
-// pass the class directly to the profiles page Widget
-class ProfileStorage {
-  dynamic jsonDecode(String source,
-          {Object? reviver(Object? key, Object? value)?}) =>
-      json.decode(source, reviver: reviver);
-
-  // return document directory
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-
-    return directory.path;
-  }
-
-  // returns specified file
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/profile.json');
-  }
-
-  // returns the contents of the specified file as String
-  Future<String> readString() async {
-    try {
-      final file = await _localFile;
-
-      final contents = await file.readAsString();
-      return contents;
-    } catch (e) {
-      return '';
-    }
-  }
-}
-
 class HomePage extends StatefulWidget {
   HomePage( { super.key } );
 
@@ -58,6 +25,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
+  Color customColor = Color.fromRGBO(80, 30, 55, 1);
   String connectButtonText = 'Connect';
   bool isConnected = false;
 
@@ -86,7 +54,7 @@ class _HomePage extends State<HomePage> {
       },
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.all(16.0),
-        primary: Colors.blue[600],
+        primary: customColor,
         onPrimary: Colors.white,
         elevation: 20, // Elevation
         shadowColor: Colors.black, // Shadow Color
@@ -101,11 +69,8 @@ class _HomePage extends State<HomePage> {
 
   Drawer customDrawer(BuildContext context) {
     return Drawer(
-      // Add a ListView to the drawer. This ensures the user can scroll
-      // through the options in the drawer if there isn't enough vertical
-      // space to fit everything.
+      // Add a ListView to the drawer. This ensures user can scroll
       child: ListView(
-        // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,
         children: [
           const SizedBox(
@@ -120,15 +85,11 @@ class _HomePage extends State<HomePage> {
           ListTile(
             title: const Text('SSH Profile'),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => ProfilePage(),
                 ),
               );
-              // Navigator.pop(context);
             },
           ),
         ],
@@ -141,6 +102,7 @@ class _HomePage extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('SSH Magic'),
+        backgroundColor: customColor,
       ),
       body: Container(),
         drawer: customDrawer(context),
