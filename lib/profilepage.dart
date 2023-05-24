@@ -103,7 +103,7 @@ class ProfilePage extends StatelessWidget {
         obscureText: objObscureText,
         decoration: InputDecoration(
           border: OutlineInputBorder(
-            borderSide: BorderSide(width: 3, color: customColor),
+            borderSide: BorderSide(width: 3),
           ),
           labelText: objLabel,
           hintText: objHint,
@@ -124,14 +124,26 @@ class ProfilePage extends StatelessWidget {
   }
 
   void addProfileButtonAction() {
-    ;
+    addr = addressController.text;
+    port = portController.text;
+    username = usernameController.text;
+    pass = passwordController.text;
+
+    if (addrValid(addr) &&
+        portValid(port) &&
+        usernameValid(username) &&
+        passValid(pass)) {
+      // TODO add input data to json file
+      ;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SSH Magic'),
+        title: const Text('SSH Profiles'),
+        backgroundColor: customColor,
       ),
       body: Column(
         children: <Widget> [
