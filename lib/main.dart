@@ -70,6 +70,28 @@ class _SMagicState extends State<SMagic> {
   // variables to save the input information
   late String addr, port, username, pass;
 
+  // validation
+  bool portValid(String port) {
+    var intPort = 0;
+    try {
+      intPort = int.parse(port);
+    } catch (e) {}
+    return intPort == 22 || (1023 < intPort && intPort < 65536);
+  }
+
+  bool addrValid(String addr) {
+    return RegExp(r"^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
+        .hasMatch(addr);
+  }
+
+  bool usernameValid(String username) {
+    return true;
+  }
+
+  bool passValid(String pass) {
+    return true;
+  }
+
   void connectButtonAction() {
     if (!isConnected) {
       // read input on button click
@@ -77,14 +99,22 @@ class _SMagicState extends State<SMagic> {
       port = portController.text;
       username = usernameController.text;
       pass = passwordController.text;
-      // TODO user should connect to remote server via tunnel
-      setState(() {
-        connectButtonText = 'Disconnect';
-      });
-      isConnected = true;
+      if (addrValid(addr) && 
+          portValid(port) &&
+          usernameValid(username) &&
+          passValid(pass)) {
+
+        // TODO user should connect to remote server via tunnel
+
+        setState(() {
+          connectButtonText = 'Disconnect';
+        });
+        isConnected = true;
+      }
     } else {
       setState(() {
         // TODO user should disconnect from remote server
+
         connectButtonText = 'Connect';
         isConnected = false;
       });
@@ -188,20 +218,6 @@ class HomeScreen extends StatelessWidget {
   final TextEditingController usernameController;
   final TextEditingController passwordController;
  
-  // validation
-  bool portValid(String port) {
-    var intPort = 0;
-    try {
-      intPort = int.parse(port);
-    } catch (e) {}
-    return intPort == 22 || (1023 < intPort && intPort < 65536);
-  }
-
-  bool addrValid(String addr) {
-    return RegExp(r"^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
-        .hasMatch(addr);
-  }
-
   // Custom input
   TextField CInput(TextEditingController objController,
       [String? objLabel, String? objHint, bool? objObscureText]) {
