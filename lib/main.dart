@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 // TODO create ssh profile page
 
 import 'profile.dart';
+import 'profilepage.dart';
 
 void main() {
   runApp(SMagic());
@@ -57,6 +58,43 @@ class SMagic extends StatefulWidget {
 }
 
 class _SMagicState extends State<SMagic> {
+  String connectButtonText = 'Connect';
+
+  // text controllers to read input from TextFields
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController portController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  // variables to save the input information
+  late String addr, port, username, pass;
+
+  ElevatedButton connectButton() {
+    return ElevatedButton(
+      onPressed: () {
+        // read input on button click
+        addr = addressController.text;
+        port = portController.text;
+        username = usernameController.text;
+        pass = passwordController.text;
+        // TODO user should connect to remote server via tunnel when this button is clicked
+        ;
+      },
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.all(16.0),
+        primary: Colors.blue[600],
+        onPrimary: Colors.white,
+        elevation: 20, // Elevation
+        shadowColor: Colors.black, // Shadow Color
+      ),
+      // connect to sshuttle when this button is clicked
+      child: const Text(
+        'Connect',
+        style: TextStyle(fontSize: 40),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -67,22 +105,33 @@ class _SMagicState extends State<SMagic> {
           backgroundColor: Color.fromRGBO(80, 30, 55, 1),
           title: Text("SSH MAGIC"),
         ),
-        body: HomeScreen()),
+        body: Column(
+          children: <Widget> [
+            HomeScreen(
+              addressController: addressController, 
+              portController: portController, 
+              usernameController: usernameController, 
+              passwordController: passwordController),
+            connectButton(),
+          ],
+        )
+      ),
     );
   }
 }
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({Key? key, 
+    required this.addressController, 
+    required this.portController, 
+    required this.usernameController, 
+    required this.passwordController}) : super(key: key);
 
   // text controllers to read input from TextFields
-  final TextEditingController addressController = TextEditingController();
-  final TextEditingController portController = TextEditingController();
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  // variables to save the input information
-  late String addr, port, username, pass;
+  final TextEditingController addressController;
+  final TextEditingController portController;
+  final TextEditingController usernameController;
+  final TextEditingController passwordController;
  
   // validation
   bool portValid(String port) {
@@ -137,35 +186,12 @@ class HomeScreen extends StatelessWidget {
         child: Center(
           child: Container(
             width: 400,
-            height: 600,
+            height: 350,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 // interface method returns inputs and summit button
                 interface(),
-                ElevatedButton(
-                  onPressed: () {
-                    // read input on button click
-                    addr = addressController.text;
-                    port = portController.text;
-                    username = usernameController.text;
-                    pass = passwordController.text;
-                    // TODO user should connect to remote server via tunnel when this button is clicked
-                    ;
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(16.0),
-                    primary: Colors.blue[600],
-                    onPrimary: Colors.white,
-                    elevation: 20, // Elevation
-                    shadowColor: Colors.black, // Shadow Color
-                  ),
-                  // connect to sshuttle when this button is clicked
-                  child: const Text(
-                    'Connect',
-                    style: TextStyle(fontSize: 40),
-                  ),
-                )
               ],
             ),
           ),
