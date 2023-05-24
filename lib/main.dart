@@ -50,70 +50,25 @@ class ProfileStorage {
   }
 }
 
-class SMagic extends StatefulWidget {
-  const SMagic( { super.key } );
+class HomePage extends StatefulWidget {
+  HomePage( { super.key } );
 
   @override
-  State<SMagic> createState() => _SMagicState();
+  State<HomePage> createState() => _HomePage();
 }
 
-class _SMagicState extends State<SMagic> {
+class _HomePage extends State<HomePage> {
   String connectButtonText = 'Connect';
   bool isConnected = false;
 
-  // text controllers to read input from TextFields
-  final TextEditingController addressController = TextEditingController();
-  final TextEditingController portController = TextEditingController();
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  // variables to save the input information
-  late String addr, port, username, pass;
-
-  // validation
-  bool portValid(String port) {
-    var intPort = 0;
-    try {
-      intPort = int.parse(port);
-    } catch (e) {}
-    return intPort == 22 || (1023 < intPort && intPort < 65536);
-  }
-
-  bool addrValid(String addr) {
-    return RegExp(r"^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$")
-        .hasMatch(addr);
-  }
-
-  bool usernameValid(String username) { 
-    return RegExp(r"^([0-9]|[A-z]|_|\.|%)+$")
-        .hasMatch(username);
-  }
-
-  bool passValid(String pass) {
-    return RegExp(r"^([0-9]|[A-z]|_|\.|%|!|@|#|\$|\^|&|\*|\(|\)|\+)+$")
-        .hasMatch(pass);
-  }
-
   void connectButtonAction() {
     if (!isConnected) {
-      // read input on button click
-      addr = addressController.text;
-      port = portController.text;
-      username = usernameController.text;
-      pass = passwordController.text;
+      // TODO user should connect to remote server via tunnel
 
-      if (addrValid(addr) && 
-          portValid(port) &&
-          usernameValid(username) &&
-          passValid(pass)) {
-
-        // TODO user should connect to remote server via tunnel
-
-        setState(() {
-          connectButtonText = 'Disconnect';
-        });
-        isConnected = true;
-      }
+      setState(() {
+        connectButtonText = 'Disconnect';
+      });
+      isConnected = true;
     } else {
       setState(() {
         // TODO user should disconnect from remote server
@@ -168,7 +123,12 @@ class _SMagicState extends State<SMagic> {
               // Update the state of the app
               // ...
               // Then close the drawer
-              Navigator.pop(context);
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ProfilePage(),
+                ),
+              );
+              // Navigator.pop(context);
             },
           ),
         ],
@@ -178,93 +138,24 @@ class _SMagicState extends State<SMagic> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('SSH Magic'),
+      ),
+      body: Container(),
+        drawer: customDrawer(context),
+    );
+  }
+}
+
+class SMagic extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color.fromRGBO(80, 30, 55, 1),
-          title: Text("SSH Magic"),
-        ),
-        body: Column(
-          children: <Widget> [
-            HomeScreen(
-              addressController: addressController, 
-              portController: portController, 
-              usernameController: usernameController, 
-              passwordController: passwordController),
-            connectButton(),
-          ],
-        ),
-        drawer: customDrawer(context),
-      ),
+      home: HomePage(),
     );
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key, 
-    required this.addressController, 
-    required this.portController, 
-    required this.usernameController, 
-    required this.passwordController}) : super(key: key);
-
-  // text controllers to read input from TextFields
-  final TextEditingController addressController;
-  final TextEditingController portController;
-  final TextEditingController usernameController;
-  final TextEditingController passwordController;
- 
-  // Custom input
-  TextField CInput(TextEditingController objController,
-      [String? objLabel, String? objHint, bool? objObscureText]) {
-    if (objLabel == null) objLabel = '';
-    if (objHint == null) objHint = '';
-    if (objObscureText == null) objObscureText = false;
-    return TextField(
-        controller: objController,
-        obscureText: objObscureText,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: objLabel,
-          hintText: objHint,
-        ));
-  }
-
-  Column interface() {
-    // vertically show input fiels and connect button
-    return Column(
-      children: <Widget> [
-        CInput(addressController, 'Address', 'x.x.x.x'),
-        SizedBox(height: 10),
-        CInput(portController, 'Port'),
-        SizedBox(height: 10),
-        CInput(usernameController, 'Username'),
-        SizedBox(height: 10),
-        CInput(passwordController, 'password', '', true),
-      ]
-    );
-  }
-
-  @override
-  Widget build(BuildContext contex) {
-    return Container(
-      child: Padding(
-        padding: EdgeInsets.all(15),
-        child: Center(
-          child: Container(
-            width: 400,
-            height: 350,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                // interface method returns inputs and summit button
-                interface(),
-              ],
-            ),
-          ),
-        ),
-      )
-    );
-  }
-}
