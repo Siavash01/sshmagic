@@ -101,6 +101,7 @@ class _SMagicState extends State<SMagic> {
       port = portController.text;
       username = usernameController.text;
       pass = passwordController.text;
+
       if (addrValid(addr) && 
           portValid(port) &&
           usernameValid(username) &&
