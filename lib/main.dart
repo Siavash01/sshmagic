@@ -100,6 +100,21 @@ class _HomePage extends State<HomePage> {
     );
   }
 
+  Widget getTextWidgets(String jsonString) // TODO cahe errors
+  {
+    dynamic jsonMap = jsonDecode(jsonString);
+    List<Widget> list = <Widget>[];
+    for(var i = 0; i <= jsonMap.length; i++) {
+        dynamic info = jsonMap['profiles'][i];
+        list.add(new Text('${info["username"]}@${info["address"]}:${info["port"]}'));
+    }
+    return new Column(children: list);
+  }
+  
+  dynamic jsonDecode(String source,
+          {Object? reviver(Object? key, Object? value)?}) =>
+      json.decode(source, reviver: reviver);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,8 +122,48 @@ class _HomePage extends State<HomePage> {
         title: const Text('SSH Magic'),
         backgroundColor: customColor,
       ),
-      body: Container(),
-        drawer: customDrawer(context),
+      body: FutureBuilder<String>(
+        future: storage.fetchProfiles(),
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          List<Widget> children;
+          if (snapshot.hasData) {
+            children = <Widget>[
+              getTextWidgets(snapshot.data.toString()),
+            ];
+          } else if (snapshot.hasError) {
+            children = <Widget>[
+              const Icon(
+                Icons.error_outline,
+                color: Colors.red,
+                size: 60,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text('Error: ${snapshot.error}'),
+              ),
+            ];
+          } else {
+            children = const <Widget>[
+              SizedBox(
+                width: 60,
+                height: 60,
+                child: CircularProgressIndicator(),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: Text('Awaiting result...'),
+              ),
+            ];
+          }
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: children,
+            ),
+          );
+        },
+      ),
+      drawer: customDrawer(context),
     );
   }
 }

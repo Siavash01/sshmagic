@@ -34,12 +34,17 @@ class ProfileStorage {
   Future<String> readString() async {
     try {
       final file = await _localFile;
-
+  
       final contents = await file.readAsString();
       return contents;
     } catch (e) {
       return '';
     }
+  }
+
+  Future<String> fetchProfiles() async {
+    var result = await readString();
+    return result;
   }
 }
 
