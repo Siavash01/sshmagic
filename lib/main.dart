@@ -21,10 +21,13 @@ class HomePage extends StatefulWidget {
   HomePage( { super.key } );
 
   @override
-  State<HomePage> createState() => _HomePage();
+  State<HomePage> createState() => _HomePage(storage: ProfileStorage());
 }
 
 class _HomePage extends State<HomePage> {
+  _HomePage({required this.storage});
+  ProfileStorage storage;
+
   Color customColor = Color.fromRGBO(80, 30, 55, 1);
   String connectButtonText = 'Connect';
   bool isConnected = false;
