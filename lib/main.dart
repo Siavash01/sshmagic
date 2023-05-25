@@ -6,7 +6,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_select_list_item_demo/data.dart';
 // import 'package:json_annotation/json_annotation.dart';
 
 // TODO create ssh profile page
@@ -147,47 +146,7 @@ class _HomePage extends State<HomePage> {
         title: const Text('SSH Magic'),
         backgroundColor: customColor,
       ),
-      body: FutureBuilder<String>(
-        future: storage.fetchProfiles(),
-        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-          List<Widget> children;
-          if (snapshot.hasData) {
-            children = <Widget>[
-              getTextWidgets(snapshot.data.toString()),
-            ];
-          } else if (snapshot.hasError) {
-            children = <Widget>[
-              const Icon(
-                Icons.error_outline,
-                color: Colors.red,
-                size: 60,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Text('Error: ${snapshot.error}'),
-              ),
-            ];
-          } else {
-            children = const <Widget>[
-              SizedBox(
-                width: 60,
-                height: 60,
-                child: CircularProgressIndicator(),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Text('Awaiting result...'),
-              ),
-            ];
-          }
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: children,
-            ),
-          );
-        },
-      ),
+      body: profileList(),
       drawer: customDrawer(context),
     );
   }
