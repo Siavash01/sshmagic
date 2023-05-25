@@ -6,12 +6,17 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_select_list_item_demo/data.dart';
 // import 'package:json_annotation/json_annotation.dart';
 
 // TODO create ssh profile page
 
 import 'profile.dart';
 import 'profilepage.dart';
+
+// test
+import 'test.dart';
+// test
 
 void main() {
   runApp(SMagic());
@@ -25,6 +30,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
+  // test
+  List<Map> staticData = MyData.data;
+  // test
+
   _HomePage({required this.storage});
   ProfileStorage storage;
 
@@ -109,6 +118,22 @@ class _HomePage extends State<HomePage> {
         list.add(new Text('${info["username"]}@${info["address"]}:${info["port"]}'));
     }
     return new Column(children: list);
+  }
+
+  Widget profileList() {
+    return ListView.builder(
+      itemBuilder: (builder, index) {
+        Map data = staticData[index];
+        return ListTile(
+          title: Text("${data['name']}"),
+          subtitle: Text("${data['email']}"),
+          leading: CircleAvatar(
+              child: Text('${data['id']}'),
+          ),
+        );
+      },
+      itemCount: staticData.length,
+    );
   }
   
   dynamic jsonDecode(String source,
