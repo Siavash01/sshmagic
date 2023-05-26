@@ -13,10 +13,6 @@ import 'package:path_provider/path_provider.dart';
 import 'profile.dart';
 import 'profilepage.dart';
 
-// test
-import 'test.dart';
-// test
-
 void main() {
   runApp(SMagic());
 }
@@ -30,7 +26,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePage extends State<HomePage> {
   // test
-  List<Map> staticData = MyData.data;
+  List<Map> staticData = Profiles.data;
   // test
 
   _HomePage({required this.storage});
@@ -112,11 +108,21 @@ class _HomePage extends State<HomePage> {
   {
     dynamic jsonMap = jsonDecode(jsonString);
     List<Widget> list = <Widget>[];
-    for(var i = 0; i <= jsonMap.length; i++) {
+    for(var i = 0; i <= 10; i++) {
         dynamic info = jsonMap['profiles'][i];
-        list.add(new Text('${info["username"]}@${info["address"]}:${info["port"]}'));
+        list.add(
+         ListTile(
+           title: Text("${info['addr']}"),
+           subtitle: Text("${info['username']}"),
+           leading: CircleAvatar(
+             child: Text(i.toString()),
+             ),
+           ),
+        );
     }
-    return new Column(children: list);
+    return Column(
+      children: list,
+      );
   }
 
   Widget profileList() {
@@ -124,8 +130,8 @@ class _HomePage extends State<HomePage> {
       itemBuilder: (builder, index) {
         Map data = staticData[index];
         return ListTile(
-          title: Text("${data['name']}"),
-          subtitle: Text("${data['email']}"),
+          title: Text("${data['username']}"),
+          subtitle: Text("${data['addr']}:${data['port']}"),
           leading: CircleAvatar(
               child: Text('${data['id']}'),
           ),
