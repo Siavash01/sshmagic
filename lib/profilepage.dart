@@ -42,9 +42,23 @@ class ProfileStorage {
     }
   }
 
-  Future<Map> fetchProfiles() async {
+  Future<Widget> fetchProfiles() async {
     var result = await readString();
-    return jsonDecode(result);
+    dynamic staticData = await jsonDecode(result)['profiles'];
+    // dynamic staticData = await Profiles.data;
+    return await ListView.builder(
+      itemBuilder: (builder, index) {
+        Map data = staticData[index];
+        return ListTile(
+          title: Text("${data['username']}"),
+          subtitle: Text("${data['addr']}:${data['port']}"),
+          leading: CircleAvatar(
+              child: Text('${data['id']}'),
+          ),
+        );
+      },
+      itemCount: staticData.length,
+    );
   }
 }
 

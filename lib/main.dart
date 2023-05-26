@@ -25,10 +25,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
-  // test
-  List<Map> staticData = Profiles.data;
-  // test
-
   _HomePage({required this.storage});
   ProfileStorage storage;
 
@@ -103,68 +99,6 @@ class _HomePage extends State<HomePage> {
       ),
     );
   }
-
-  Widget getTextWidgets(String jsonString) // TODO cahe errors
-  {
-    dynamic jsonMap = jsonDecode(jsonString);
-    List<Widget> list = <Widget>[];
-    for(var i = 0; i <= 10; i++) {
-        dynamic info = jsonMap['profiles'][i];
-        list.add(
-         ListTile(
-           title: Text("${info['addr']}"),
-           subtitle: Text("${info['username']}"),
-           leading: CircleAvatar(
-             child: Text(i.toString()),
-             ),
-           ),
-        );
-    }
-    return Column(
-      children: list,
-      );
-  }
-
-  Widget profileList() {
-    List<Map> staticData = Profiles.data;
-    return ListView.builder(
-      itemBuilder: (builder, index) {
-        Map data = staticData[index];
-        return ListTile(
-          title: Text("${data['username']}"),
-          subtitle: Text("${data['addr']}:${data['port']}"),
-          leading: CircleAvatar(
-              child: Text('${data['id']}'),
-          ),
-        );
-      },
-      itemCount: staticData.length,
-    );
-  }
-
-  // following method might be completely bullwhit
-  void test() async {
-    await storage.fetchProfiles().then((data) {
-      ListView.builder(
-        itemBuilder: (builder, index) {
-          Map info = data[index];
-          return ListTile(
-            title: Text("${info['name']}"),
-            subtitle: Text("${info['email']}"),
-            leading: CircleAvatar(
-                child: Text('${info['id']}'),
-            ),
-          );
-        },
-        itemCount: staticData.length,
-      );
-    }, onError: (e) {
-      print("Error***********");
-      return Container();
-    }
-    );
-  }
-  // bullwhit end flag
   
   dynamic jsonDecode(String source,
           {Object? reviver(Object? key, Object? value)?}) =>
@@ -177,7 +111,47 @@ class _HomePage extends State<HomePage> {
         title: const Text('SSH Magic'),
         backgroundColor: customColor,
       ),
-      body: profileList(),
+      body: FutureBuilder<Widget>(
+        future: storage.fetchProfiles(),
+        builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+          List<Widget> children;
+          if (snapshot.hasData) {
+            children = <Widget>[
+              Text("fuck"),
+            ];
+          } else if (snapshot.hasError) {
+            children = <Widget>[
+              const Icon(
+                Icons.error_outline,
+                color: Colors.red,
+                size: 60,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text('Error: ${snapshot.error}'),
+              ),
+            ];
+          } else {
+            children = const <Widget>[
+              SizedBox(
+                width: 60,
+                height: 60,
+                child: CircularProgressIndicator(),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: Text('Awaiting result...'),
+              ),
+            ];
+          }
+          return Center(
+            child: snapshot.data, //Column(
+            //  mainAxisAlignment: MainAxisAlignment.center,
+            //  children: children,
+            //),
+          );
+        },
+      ),
       drawer: customDrawer(context),
     );
   }
