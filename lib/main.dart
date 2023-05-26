@@ -126,6 +126,7 @@ class _HomePage extends State<HomePage> {
   }
 
   Widget profileList() {
+    List<Map> staticData = Profiles.data;
     return ListView.builder(
       itemBuilder: (builder, index) {
         Map data = staticData[index];
@@ -140,6 +141,30 @@ class _HomePage extends State<HomePage> {
       itemCount: staticData.length,
     );
   }
+
+  // following method might be completely bullwhit
+  void test() async {
+    await storage.fetchProfiles().then((data) {
+      ListView.builder(
+        itemBuilder: (builder, index) {
+          Map info = data[index];
+          return ListTile(
+            title: Text("${info['name']}"),
+            subtitle: Text("${info['email']}"),
+            leading: CircleAvatar(
+                child: Text('${info['id']}'),
+            ),
+          );
+        },
+        itemCount: staticData.length,
+      );
+    }, onError: (e) {
+      print("Error***********");
+      return Container();
+    }
+    );
+  }
+  // bullwhit end flag
   
   dynamic jsonDecode(String source,
           {Object? reviver(Object? key, Object? value)?}) =>

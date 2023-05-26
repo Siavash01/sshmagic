@@ -42,9 +42,9 @@ class ProfileStorage {
     }
   }
 
-  Future<String> fetchProfiles() async {
+  Future<Map> fetchProfiles() async {
     var result = await readString();
-    return result;
+    return jsonDecode(result);
   }
 }
 
