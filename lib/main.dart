@@ -114,42 +114,23 @@ class _HomePage extends State<HomePage> {
       body: FutureBuilder<Widget>(
         future: storage.fetchProfiles(),
         builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-          List<Widget> children;
+          Widget? child;
           if (snapshot.hasData) {
-            children = <Widget>[
-              Text("fuck"),
-            ];
+            child = snapshot.data;
           } else if (snapshot.hasError) {
-            children = <Widget>[
-              const Icon(
-                Icons.error_outline,
-                color: Colors.red,
-                size: 60,
-              ),
-              Padding(
+            child = Padding(
                 padding: const EdgeInsets.only(top: 16),
-                child: Text('Error: ${snapshot.error}'),
-              ),
-            ];
+                child: Text('Error: ${snapshot.error}'), // TODO when finishid change to Text("Could not load profiles");
+              );
           } else {
-            children = const <Widget>[
-              SizedBox(
-                width: 60,
-                height: 60,
-                child: CircularProgressIndicator(),
-              ),
-              Padding(
+            child: Padding(
                 padding: EdgeInsets.only(top: 16),
                 child: Text('Awaiting result...'),
-              ),
-            ];
+              );
           }
           return Center(
-            child: snapshot.data, //Column(
-            //  mainAxisAlignment: MainAxisAlignment.center,
-            //  children: children,
-            //),
-          );
+            child: child,
+            );
         },
       ),
       drawer: customDrawer(context),
