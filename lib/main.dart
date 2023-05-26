@@ -29,22 +29,43 @@ class _HomePage extends State<HomePage> {
   ProfileStorage storage;
 
   Color customColor = Color.fromRGBO(80, 30, 55, 1);
-  String connectButtonText = 'Connect';
   bool isConnected = false;
+
+  Icon connectButtonIcon = const Icon(
+      Icons.play_arrow,
+      size: 40,
+      color: Colors.white,
+    );
+
+  Icon playIcon() {
+    return const Icon(
+      Icons.play_arrow,
+      size: 40,
+      color: Colors.white,
+    );
+  }
+  
+  Icon crossIcon() {
+    return const Icon(
+      Icons.close,
+      size: 40,
+      color: Colors.white,
+    );
+  }
 
   void connectButtonAction() {
     if (!isConnected) {
       // TODO user should connect to remote server via tunnel
 
       setState(() {
-        connectButtonText = 'Disconnect';
+        connectButtonIcon = crossIcon();
       });
       isConnected = true;
     } else {
       setState(() {
         // TODO user should disconnect from remote server
 
-        connectButtonText = 'Connect';
+        connectButtonIcon = playIcon();
         isConnected = false;
       });
     }
@@ -54,11 +75,7 @@ class _HomePage extends State<HomePage> {
     return FloatingActionButton(
       onPressed: () => connectButtonAction(),
       backgroundColor: customColor,
-      child: const Icon(
-        Icons.play_arrow,
-        size: 40,
-        color: Colors.white,
-        ),
+      child: connectButtonIcon,
     );
   }
 
