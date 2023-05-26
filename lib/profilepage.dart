@@ -48,14 +48,10 @@ class ProfileStorage {
       subtitle: Text("${data['addr']}:${data['port']}"),
       leading: CircleAvatar(
           child: Text('${data['id']}'),
-      ),
-      trailing: TextButton(
-        style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
-        ),
-        onPressed: () { },
-        child: Text('Connect'),
-        ),
+      ), 
+      onTap: () {
+        print("hiiiiiii"); // TODO
+      },
     );
   }
 

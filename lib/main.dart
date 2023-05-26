@@ -50,23 +50,15 @@ class _HomePage extends State<HomePage> {
     }
   }
 
-  ElevatedButton connectButton() {
-    return ElevatedButton(
-      onPressed: () {
-        connectButtonAction();
-      },
-      style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.all(16.0),
-        primary: customColor,
-        onPrimary: Colors.white,
-        elevation: 20, // Elevation
-        shadowColor: Colors.black, // Shadow Color
-      ),
-      // connect to sshuttle when this button is clicked
-      child: Text(
-        connectButtonText,
-        style: TextStyle(fontSize: 40),
-      ),
+  Widget connectButton() {
+    return FloatingActionButton(
+      onPressed: () => connectButtonAction(),
+      backgroundColor: customColor,
+      child: const Icon(
+        Icons.play_arrow,
+        size: 40,
+        color: Colors.white,
+        ),
     );
   }
 
@@ -134,6 +126,7 @@ class _HomePage extends State<HomePage> {
         },
       ),
       drawer: customDrawer(context),
+      floatingActionButton: connectButton(),
     );
   }
 }
