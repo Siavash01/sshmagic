@@ -54,7 +54,7 @@ class ProfileStorage {
           foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
         ),
         onPressed: () { },
-        child: Text('Select'),
+        child: Text('Connect'),
         ),
     );
   }
