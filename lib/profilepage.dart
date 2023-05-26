@@ -42,6 +42,23 @@ class ProfileStorage {
     }
   }
 
+  Widget profileListItem(Map data) {
+    return ListTile(
+      title: Text("${data['username']}"),
+      subtitle: Text("${data['addr']}:${data['port']}"),
+      leading: CircleAvatar(
+          child: Text('${data['id']}'),
+      ),
+      trailing: TextButton(
+        style: ButtonStyle(
+          foregroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+        ),
+        onPressed: () { },
+        child: Text('Select'),
+        ),
+    );
+  }
+
   Future<Widget> fetchProfiles() async {
     var result = await readString();
     dynamic staticData = await jsonDecode(result)['profiles'];
@@ -49,13 +66,7 @@ class ProfileStorage {
     return await ListView.builder(
       itemBuilder: (builder, index) {
         Map data = staticData[index];
-        return ListTile(
-          title: Text("${data['username']}"),
-          subtitle: Text("${data['addr']}:${data['port']}"),
-          leading: CircleAvatar(
-              child: Text('${data['id']}'),
-          ),
-        );
+        return profileListItem(data);
       },
       itemCount: staticData.length,
     );
