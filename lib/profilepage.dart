@@ -13,6 +13,9 @@ import 'profile.dart';
 // this class is going to be used in ssh profiles page
 // pass the class directly to the profiles page Widget
 class ProfileStorage {
+  ProfileStorage(this.selectedProfile);
+  int selectedProfile = 0;
+
   dynamic jsonDecode(String source,
           {Object? reviver(Object? key, Object? value)?}) =>
       json.decode(source, reviver: reviver);
@@ -42,6 +45,12 @@ class ProfileStorage {
     }
   }
 
+  void selectProfile(Map data) {
+    // TODO try cache exceptions and errors
+    selectedProfile = data['id'];
+    // TODO setState to change ListTile color
+  }
+
   Widget profileListItem(Map data) {
     return ListTile(
       title: Text("${data['username']}"),
@@ -49,9 +58,8 @@ class ProfileStorage {
       leading: CircleAvatar(
           child: Text('${data['id']}'),
       ), 
-      onTap: () {
-        print("hiiiiiii"); // TODO
-      },
+      onTap: () => selectProfile(data),
+      hoverColor: Color.fromRGBO(80, 30, 55, 0.3),
     );
   }
 
