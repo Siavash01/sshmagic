@@ -13,11 +13,14 @@ import 'profile.dart';
 // this class is going to be used in ssh profiles page
 // pass the class directly to the profiles page Widget
 class ProfileStorage {
-  int selectedProfile = 0;
+  int selectedProfile = 4;
 
   dynamic jsonDecode(String source,
           {Object? reviver(Object? key, Object? value)?}) =>
       json.decode(source, reviver: reviver);
+
+  final Color listTileColor = Color.fromRGBO(80, 30, 55, 0);
+  final Color selectedProfileColor = Color.fromRGBO(94, 90, 89, 1);
 
   // return document directory
   Future<String> get _localPath async {
@@ -51,6 +54,10 @@ class ProfileStorage {
   }
 
   Widget profileListItem(Map data) {
+    Color localListTileColor = listTileColor;
+    if (selectedProfile == data['id']) { // TODO try cache for field: id
+      localListTileColor = selectedProfileColor;
+    }
     return ListTile(
       title: Text("${data['username']}"),
       subtitle: Text("${data['addr']}:${data['port']}"),
@@ -58,6 +65,7 @@ class ProfileStorage {
           child: Text('${data['id']}'),
       ), 
       onTap: () => selectProfile(data),
+      tileColor: localListTileColor,
       hoverColor: Color.fromRGBO(80, 30, 55, 0.3),
     );
   }
