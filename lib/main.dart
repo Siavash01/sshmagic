@@ -25,7 +25,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
-  int selectedProfile = 4;
+  int selectedProfile = 0;
   final Color customColor = Color.fromRGBO(80, 30, 55, 1);
   final Color listTileColor = Color.fromRGBO(80, 30, 55, 0);
   final Color selectedProfileColor = Color.fromRGBO(94, 90, 89, 1);

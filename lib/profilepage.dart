@@ -7,9 +7,6 @@ import 'dart:convert';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-// my own modules
-import 'profile.dart';
-
 class ProfilePage extends StatelessWidget {
   Color customColor = Color.fromRGBO(80, 30, 55, 1);
 
