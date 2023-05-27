@@ -13,7 +13,6 @@ import 'profile.dart';
 // this class is going to be used in ssh profiles page
 // pass the class directly to the profiles page Widget
 class ProfileStorage {
-  ProfileStorage(this.selectedProfile);
   int selectedProfile = 0;
 
   dynamic jsonDecode(String source,
