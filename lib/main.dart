@@ -21,14 +21,15 @@ class HomePage extends StatefulWidget {
   HomePage( { super.key } );
 
   @override
-  State<HomePage> createState() => _HomePage(storage: ProfileStorage());
+  State<HomePage> createState() => _HomePage();
 }
 
 class _HomePage extends State<HomePage> {
-  _HomePage({required this.storage});
-  ProfileStorage storage;
+  int selectedProfile = 4;
+  final Color customColor = Color.fromRGBO(80, 30, 55, 1);
+  final Color listTileColor = Color.fromRGBO(80, 30, 55, 0);
+  final Color selectedProfileColor = Color.fromRGBO(94, 90, 89, 1);
 
-  Color customColor = Color.fromRGBO(80, 30, 55, 1);
   bool isConnected = false;
 
   Icon connectButtonIcon = const Icon(
@@ -79,6 +80,66 @@ class _HomePage extends State<HomePage> {
     );
   }
 
+  void selectProfile(Map data) {
+    // TODO try cache exceptions and errors
+    setState(() {
+      selectedProfile = data['id'];
+    });
+    // TODO setState to change ListTile color
+  }
+
+  Widget profileListItem(Map data) {
+    return ListTile(
+      title: Text("${data['username']}"),
+      subtitle: Text("${data['addr']}:${data['port']}"),
+      leading: CircleAvatar(
+          child: Text('${data['id']}'),
+      ), 
+      onTap: () => selectProfile(data),
+      tileColor: listTileColor,
+      hoverColor: Color.fromRGBO(80, 30, 55, 0.3),
+      selected: selectedProfile == data['id'],
+      selectedTileColor: selectedProfileColor,
+    );
+  }
+
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  // returns specified file
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/profile.json');
+  }
+
+  // returns the contents of the specified file as String
+  Future<String> readString() async {
+    try {
+      final file = await _localFile;
+  
+      final contents = await file.readAsString();
+      return contents;
+    } catch (e) {
+      return '';
+    }
+  }
+
+  Future<Widget> fetchProfiles() async {
+    var result = await readString();
+    dynamic staticData = await jsonDecode(result)['profiles'];
+    // dynamic staticData = await Profiles.data;
+    return await ListView.builder(
+      itemBuilder: (builder, index) {
+        Map data = staticData[index];
+        return profileListItem(data);
+      },
+      itemCount: staticData.length,
+    );
+  }
+
   Drawer customDrawer(BuildContext context) {
     return Drawer(
       // Add a ListView to the drawer. This ensures user can scroll
@@ -121,7 +182,7 @@ class _HomePage extends State<HomePage> {
         backgroundColor: customColor,
       ),
       body: FutureBuilder<Widget>(
-        future: storage.fetchProfiles(),
+        future: fetchProfiles(),
         builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
           Widget? child;
           if (snapshot.hasData) {
