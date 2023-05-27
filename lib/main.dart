@@ -45,10 +45,10 @@ class _HomePage extends State<HomePage> {
     );
   }
   
-  Icon crossIcon() {
+  Icon squareIcon() {
     return const Icon(
-      Icons.close,
-      size: 40,
+      Icons.square,
+      size: 30,
       color: Colors.white,
     );
   }
@@ -58,7 +58,7 @@ class _HomePage extends State<HomePage> {
       // TODO user should connect to remote server via tunnel
 
       setState(() {
-        connectButtonIcon = crossIcon();
+        connectButtonIcon = squareIcon();
       });
       isConnected = true;
     } else {
