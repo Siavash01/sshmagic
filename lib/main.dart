@@ -56,10 +56,11 @@ class _HomePage extends State<HomePage> {
   }
 
   void connectButtonAction() {
+    String localPassword = "";
     if (!isConnected) {
       var currProf = selectedProfile;
       if (currProf != null) {
-        shell.run('sshuttle --dns --no-latency-control -r ${currProf["username"]}:${currProf["pass"]}@${currProf["addr"]}:${currProf["port"]} 0/0 -x ${currProf["addr"]}');
+        shell.run('echo "$localPassword" | sudo -S sshuttle --dns --no-latency-control -r ${currProf["username"]}:${currProf["pass"]}@${currProf["addr"]}:${currProf["port"]} 0/0 -x ${currProf["addr"]}');
       }
 
       setState(() {
