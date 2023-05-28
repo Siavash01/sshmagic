@@ -6,12 +6,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-// import 'package:json_annotation/json_annotation.dart';
-
-// TODO create ssh profile page
-
+import 'package:process_run/shell.dart';
 import 'profile.dart';
 import 'profilepage.dart';
+import 'package:process_run/shell.dart';
+
+var shell = Shell();
 
 void main() {
   runApp(SMagic());
@@ -25,7 +25,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
-  int selectedProfile = 0;
+  int selectedProfileId = 0;
+  Map? selectedProfile;
   final Color customColor = Color.fromRGBO(80, 30, 55, 1);
   final Color listTileColor = Color.fromRGBO(80, 30, 55, 0);
   final Color selectedProfileColor = Color.fromRGBO(94, 90, 89, 1);
@@ -56,7 +57,10 @@ class _HomePage extends State<HomePage> {
 
   void connectButtonAction() {
     if (!isConnected) {
-      // TODO user should connect to remote server via tunnel
+      var currProf = selectedProfile;
+      if (currProf != null) {
+        shell.run('sshuttle --dns --no-latency-control -r ${currProf["username"]}:${currProf["pass"]}@${currProf["addr"]}:${currProf["port"]} 0/0 -x ${currProf["addr"]}');
+      }
 
       setState(() {
         connectButtonIcon = squareIcon();
@@ -82,8 +86,9 @@ class _HomePage extends State<HomePage> {
 
   void selectProfile(Map data) {
     // TODO try cache exceptions and errors
+    selectedProfile = data;
     setState(() {
-      selectedProfile = data['id'];
+      selectedProfileId = data['id'];
     });
     // TODO setState to change ListTile color
   }
@@ -98,7 +103,7 @@ class _HomePage extends State<HomePage> {
       onTap: () => selectProfile(data),
       tileColor: listTileColor,
       hoverColor: Color.fromRGBO(80, 30, 55, 0.3),
-      selected: selectedProfile == data['id'],
+      selected: selectedProfileId == data['id'],
       selectedTileColor: selectedProfileColor,
     );
   }
