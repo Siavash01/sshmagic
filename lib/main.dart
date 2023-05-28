@@ -7,9 +7,10 @@ import 'dart:convert';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:process_run/shell.dart';
+import 'package:process_run/shell.dart';
 import 'profile.dart';
 import 'profilepage.dart';
-import 'package:process_run/shell.dart';
+import 'local.dart';
 
 var shell = Shell();
 
@@ -55,10 +56,17 @@ class _HomePage extends State<HomePage> {
     );
   }
 
-  void connectButtonAction() {
+  void connectButtonAction(BuildContext context) {
     String localPassword = "";
     if (!isConnected) {
       var currProf = selectedProfile;
+      setState(() { 
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => Local(),
+          ),
+        );
+      } );
       if (currProf != null) {
         shell.run('echo "$localPassword" | sudo -S sshuttle --dns --no-latency-control -r ${currProf["username"]}:${currProf["pass"]}@${currProf["addr"]}:${currProf["port"]} 0/0 -x ${currProf["addr"]}');
       }
@@ -77,9 +85,9 @@ class _HomePage extends State<HomePage> {
     }
   }
 
-  Widget connectButton() {
+  Widget connectButton(BuildContext context) {
     return FloatingActionButton(
-      onPressed: () => connectButtonAction(),
+      onPressed: () => connectButtonAction(context),
       backgroundColor: customColor,
       child: connectButtonIcon,
     );
@@ -210,7 +218,7 @@ class _HomePage extends State<HomePage> {
         },
       ),
       drawer: customDrawer(context),
-      floatingActionButton: connectButton(),
+      floatingActionButton: connectButton(context),
     );
   }
 }

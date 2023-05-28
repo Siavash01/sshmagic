@@ -114,6 +114,7 @@ class ProfilePage extends StatelessWidget {
           Flexible(
             child: interface(),
           ),
+          // add profile button
           Flexible(
             child: Center(
               child: Ink(decoration:ShapeDecoration(color: customColor, shape:CircleBorder()),
