@@ -4,7 +4,8 @@ A useragent to perform ssh tunnel to given server
 
 ## Getting Started
 
-A ssh useragent to create an ssh tunnel between client and given server
-To use this application you first need to install following packages:
-sshuttle
-sshpass
+To user this, you need to install: sshuttle, sshpass
+after installing the dependencies run below command and put the result in /etc/sudoers.d/sshuttle_auto
+
+command:
+  sshuttle --sudoers-no-modify
