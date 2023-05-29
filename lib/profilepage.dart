@@ -7,7 +7,14 @@ import 'dart:convert';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
+  ProfilePage( { super.key } );
+
+  @override
+  State<ProfilePage> createState() => _ProfilePage();
+}
+
+class _ProfilePage extends State<ProfilePage> {
   Color customColor = Color.fromRGBO(80, 30, 55, 1);
 
   // text controllers to read input from TextFields
@@ -42,20 +49,31 @@ class ProfilePage extends StatelessWidget {
     return RegExp(r"^([0-9]|[A-z]|_|\.|%|!|@|#|\$|\^|&|\*|\(|\)|\+)+$")
         .hasMatch(pass);
   }
-  
-  void insertProfile() {
-    // read input on button click
-    addr = addressController.text;
-    port = portController.text;
-    username = usernameController.text;
-    pass = passwordController.text;
 
-    if (addrValid(addr) && 
-        portValid(port) &&
-        usernameValid(username) &&
-        passValid(pass)) {}
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
   }
 
+  // returns specified file
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/profile.json');
+  }
+
+  // returns the contents of the specified file as String
+  Future<String> readString() async {
+    try {
+      final file = await _localFile;
+  
+      final contents = await file.readAsString();
+      return contents;
+    } catch (e) {
+      return '';
+    }
+  }
+  
   // Custom input
   TextField CInput(TextEditingController objController,
       [String? objLabel, String? objHint, bool? objObscureText]) {
@@ -87,7 +105,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  void addProfileButtonAction() {
+  void addProfileButtonAction() async {
     addr = addressController.text;
     port = portController.text;
     username = usernameController.text;
@@ -97,8 +115,14 @@ class ProfilePage extends StatelessWidget {
         portValid(port) &&
         usernameValid(username) &&
         passValid(pass)) {
-      // TODO add input data to json file
-      ;
+      Map<dynamic, dynamic> jsonMap = jsonDecode(await readString());
+      int lastId = jsonMap['lastId'];
+      Map newProfile = {"id": lastId+1, "addr": addr, "port": port, "username": username, pass: pass};
+      jsonMap["profiles"].add(newProfile);
+      jsonMap["lastId"] = jsonMap["lastId"] + 1;
+      File jsonFile = await _localFile;
+      jsonFile.writeAsString(jsonEncode(jsonMap));
+      setState(() {});
     }
   }
 
