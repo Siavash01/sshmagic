@@ -28,6 +28,7 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> {
   int selectedProfileId = 0;
   Map? selectedProfile;
+  String? localPass;
   final Color customColor = Color.fromRGBO(80, 30, 55, 1);
   final Color listTileColor = Color.fromRGBO(80, 30, 55, 0);
   final Color selectedProfileColor = Color.fromRGBO(94, 90, 89, 1);
@@ -56,8 +57,11 @@ class _HomePage extends State<HomePage> {
     );
   }
 
+  void submitLocal(String lp) {
+    localPass = lp;
+  }
+
   void connectButtonAction(BuildContext context) {
-    String localPassword = "";
     if (!isConnected) {
       var currProf = selectedProfile;
       setState(() { 
@@ -67,14 +71,14 @@ class _HomePage extends State<HomePage> {
           ),
         );
       } );
-      if (currProf != null) {
-        shell.run('echo "$localPassword" | sudo -S sshuttle --dns --no-latency-control -r ${currProf["username"]}:${currProf["pass"]}@${currProf["addr"]}:${currProf["port"]} 0/0 -x ${currProf["addr"]}');
+      if (currProf != null && localPass != null) {
+        shell.run('echo "$localPass" | sudo -S sshuttle --dns --no-latency-control -r ${currProf["username"]}:${currProf["pass"]}@${currProf["addr"]}:${currProf["port"]} 0/0 -x ${currProf["addr"]}');
+        setState(() {
+          connectButtonIcon = squareIcon();
+        });
+        isConnected = true;
       }
 
-      setState(() {
-        connectButtonIcon = squareIcon();
-      });
-      isConnected = true;
     } else {
       setState(() {
         // TODO user should disconnect from remote server
