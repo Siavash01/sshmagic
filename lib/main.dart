@@ -7,7 +7,6 @@ import 'dart:convert';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:process_run/shell.dart';
-import 'package:process_run/shell.dart';
 import 'profile.dart';
 import 'profilepage.dart';
 import 'local.dart';
@@ -28,11 +27,12 @@ class HomePage extends StatefulWidget {
 class _HomePage extends State<HomePage> {
   int selectedProfileId = 0;
   Map? selectedProfile;
+  int? shuttlePid;
   String? localPass;
   final Color customColor = Color.fromRGBO(80, 30, 55, 1);
   final Color listTileColor = Color.fromRGBO(80, 30, 55, 0);
   final Color selectedProfileColor = Color.fromRGBO(94, 90, 89, 1);
-
+  
   bool isConnected = false;
 
   Icon connectButtonIcon = const Icon(
@@ -68,7 +68,10 @@ class _HomePage extends State<HomePage> {
     }
   }
 
-  void connectButtonAction(BuildContext context) {
+  void connectButtonAction(BuildContext context) async {
+    // TODO remove from
+    localPass = "Not-273&Not-173";
+    // TODO remove till
     if (!isConnected) {
       var currProf = selectedProfile;
       setState(() { 
@@ -78,18 +81,25 @@ class _HomePage extends State<HomePage> {
           ),
         );
       } );
-      if (currProf != null && localPass != null) {
-        shell.run('echo "$localPass" | sudo -S sshuttle --dns --no-latency-control -r ${currProf["username"]}:${currProf["pass"]}@${currProf["addr"]}:${currProf["port"]} 0/0 -x ${currProf["addr"]}');
+      if (currProf != null && localPass != null) { 
+        // var a = shell.run('echo "${localPass}" | sudo -S sshuttle --dns --no-latency-control -r ${currProf["username"]}:${currProf["pass"]}@${currProf["addr"]}:${currProf["port"]} 0/0 -x ${currProf["addr"]}');
         setState(() {
           connectButtonIcon = squareIcon();
         });
         isConnected = true;
         localPass = null;
+        var result = await Process.start('sshuttle', ['--dns', '--no-latency-control', '-r', '${currProf["username"]}:${currProf["pass"]}@${currProf["addr"]}:${currProf["port"]}', '0/0', '-x', '${currProf["addr"]}']);
+        shuttlePid = result.pid;
+        // TODO use result.stdout and result.stderr to check for timeout or catch errors
       }
     } else {
+      var tmpId = shuttlePid;
+      print(tmpId);
+      if (tmpId != null) {
+        Process.killPid(tmpId);
+        // var killResult = await Process.run('kill', [tmpId.toString()], runInShell: true);
+      }
       setState(() {
-        // TODO user should disconnect from remote server
-
         connectButtonIcon = playIcon();
         isConnected = false;
       });
