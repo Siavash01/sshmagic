@@ -57,8 +57,15 @@ class _HomePage extends State<HomePage> {
     );
   }
 
+  bool passValid(String pass) {
+    return RegExp(r"^([0-9]|[A-z]|_|\.|%|!|@|#|\$|\^|&|\*|\(|\)|\+)+$")
+        .hasMatch(pass);
+  }
+
   void submitLocal(String lp) {
-    localPass = lp;
+    if (passValid(lp)) {
+      localPass = lp;
+    }
   }
 
   void connectButtonAction(BuildContext context) {
@@ -77,8 +84,8 @@ class _HomePage extends State<HomePage> {
           connectButtonIcon = squareIcon();
         });
         isConnected = true;
+        localPass = null;
       }
-
     } else {
       setState(() {
         // TODO user should disconnect from remote server
