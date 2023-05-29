@@ -122,7 +122,6 @@ class _ProfilePage extends State<ProfilePage> {
       jsonMap["lastId"] = jsonMap["lastId"] + 1;
       File jsonFile = await _localFile;
       jsonFile.writeAsString(jsonEncode(jsonMap));
-      setState(() {});
     }
   }
 

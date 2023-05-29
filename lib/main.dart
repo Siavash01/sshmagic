@@ -172,7 +172,7 @@ class _HomePage extends State<HomePage> {
                 MaterialPageRoute(
                   builder: (context) => ProfilePage(),
                 ),
-              );
+              ).then((e) {setState(() {});}); // setState for current Class when addProfile is done
             },
           ),
         ],
