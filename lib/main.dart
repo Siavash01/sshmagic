@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/foundation.dart';
+// import 'package:flutter/services.dart';
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
-import 'package:path/path.dart';
+// import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'profile.dart';
+// import 'profile.dart';
 import 'profilepage.dart';
 
 void main() {
@@ -14,7 +14,7 @@ void main() {
 }
 
 class HomePage extends StatefulWidget {
-  HomePage( { super.key } );
+  HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePage();
@@ -24,17 +24,17 @@ class _HomePage extends State<HomePage> {
   int selectedProfileId = 0;
   Map? selectedProfile;
   int? shuttlePid;
-  final Color customColor = Color.fromRGBO(80, 30, 55, 1);
-  final Color listTileColor = Color.fromRGBO(80, 30, 55, 0);
-  final Color selectedProfileColor = Color.fromRGBO(94, 90, 89, 1);
-  
+  final Color customColor = const Color.fromRGBO(80, 30, 55, 1);
+  final Color listTileColor = const Color.fromRGBO(80, 30, 55, 0);
+  final Color selectedProfileColor = const Color.fromRGBO(94, 90, 89, 1);
+
   bool isConnected = false;
 
   Icon connectButtonIcon = const Icon(
-      Icons.play_arrow,
-      size: 40,
-      color: Colors.white,
-    );
+    Icons.play_arrow,
+    size: 40,
+    color: Colors.white,
+  );
 
   Icon playIcon() {
     return const Icon(
@@ -43,7 +43,7 @@ class _HomePage extends State<HomePage> {
       color: Colors.white,
     );
   }
-  
+
   Icon squareIcon() {
     return const Icon(
       Icons.square,
@@ -60,12 +60,20 @@ class _HomePage extends State<HomePage> {
   void connectButtonAction(BuildContext context) async {
     if (!isConnected) {
       var currProf = selectedProfile;
-      if (currProf != null) { 
+      if (currProf != null) {
         setState(() {
           connectButtonIcon = squareIcon();
         });
         isConnected = true;
-        var result = await Process.start('sshuttle', ['--dns', '--no-latency-control', '-r', '${currProf["username"]}:${currProf["pass"]}@${currProf["addr"]}:${currProf["port"]}', '0/0', '-x', '${currProf["addr"]}']);
+        var result = await Process.start('sshuttle', [
+          '--dns',
+          '--no-latency-control',
+          '-r',
+          '${currProf["username"]}:${currProf["pass"]}@${currProf["addr"]}:${currProf["port"]}',
+          '0/0',
+          '-x',
+          '${currProf["addr"]}'
+        ]);
         shuttlePid = result.pid;
         // TODO use result.stdout and result.stderr to check for timeout or catch errors
       }
@@ -103,11 +111,11 @@ class _HomePage extends State<HomePage> {
       title: Text("${data['username']}"),
       subtitle: Text("${data['addr']}:${data['port']}"),
       leading: CircleAvatar(
-          child: Text('${data['id']}'),
-      ), 
+        child: Text('${data['id']}'),
+      ),
       onTap: () => selectProfile(data),
       tileColor: listTileColor,
-      hoverColor: Color.fromRGBO(80, 30, 55, 0.3),
+      hoverColor: const Color.fromRGBO(80, 30, 55, 0.3),
       selected: selectedProfileId == data['id'],
       selectedTileColor: selectedProfileColor,
     );
@@ -129,7 +137,7 @@ class _HomePage extends State<HomePage> {
   Future<String> readString() async {
     try {
       final file = await _localFile;
-  
+
       final contents = await file.readAsString();
       return contents;
     } catch (e) {
@@ -157,29 +165,32 @@ class _HomePage extends State<HomePage> {
         padding: EdgeInsets.zero,
         children: [
           const SizedBox(
-            height: 64,
-            child: DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(80, 30, 55, 1),
-              ),
-              child: Text('SSH Magic'),
-            )
-          ),
+              height: 64,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(80, 30, 55, 1),
+                ),
+                child: Text('SSH Magic'),
+              )),
           ListTile(
             title: const Text('SSH Profile'),
             onTap: () {
-              Navigator.of(context).push(
+              Navigator.of(context)
+                  .push(
                 MaterialPageRoute(
                   builder: (context) => ProfilePage(),
                 ),
-              ).then((e) {setState(() {});}); // setState for current Class when addProfile is done
+              )
+                  .then((e) {
+                setState(() {});
+              }); // setState for current Class when addProfile is done
             },
           ),
         ],
       ),
     );
   }
-  
+
   dynamic jsonDecode(String source,
           {Object? reviver(Object? key, Object? value)?}) =>
       json.decode(source, reviver: reviver);
@@ -199,18 +210,20 @@ class _HomePage extends State<HomePage> {
             child = snapshot.data;
           } else if (snapshot.hasError) {
             child = Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Text('Error: ${snapshot.error}'), // TODO when finishid change to Text("Could not load profiles");
-              );
+              padding: const EdgeInsets.only(top: 16),
+              child: Text(
+                  'Error: ${snapshot.error}'), // TODO when finishid change to Text("Could not load profiles");
+            );
           } else {
-            child: Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Text('Awaiting result...'),
-              );
+            child:
+            const Padding(
+              padding: EdgeInsets.only(top: 16),
+              child: Text('Awaiting result...'),
+            );
           }
           return Center(
             child: child,
-            );
+          );
         },
       ),
       drawer: customDrawer(context),
@@ -229,4 +242,3 @@ class SMagic extends StatelessWidget {
     );
   }
 }
-

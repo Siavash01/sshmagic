@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/foundation.dart';
+// import 'package:flutter/services.dart';
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
-import 'package:path/path.dart';
+// import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ProfilePage extends StatefulWidget {
-  ProfilePage( { super.key } );
+  const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePage();
@@ -40,9 +40,8 @@ class _ProfilePage extends State<ProfilePage> {
         .hasMatch(addr);
   }
 
-  bool usernameValid(String username) { 
-    return RegExp(r"^([0-9]|[A-z]|_|\.|%)+$")
-        .hasMatch(username);
+  bool usernameValid(String username) {
+    return RegExp(r"^([0-9]|[A-z]|_|\.|%)+$").hasMatch(username);
   }
 
   bool passValid(String pass) {
@@ -66,25 +65,25 @@ class _ProfilePage extends State<ProfilePage> {
   Future<String> readString() async {
     try {
       final file = await _localFile;
-  
+
       final contents = await file.readAsString();
       return contents;
     } catch (e) {
       return '';
     }
   }
-  
+
   // Custom input
   TextField CInput(TextEditingController objController,
       [String? objLabel, String? objHint, bool? objObscureText]) {
-    if (objLabel == null) objLabel = '';
-    if (objHint == null) objHint = '';
-    if (objObscureText == null) objObscureText = false;
+    objLabel ??= '';
+    objHint ??= '';
+    objObscureText ??= false;
     return TextField(
         controller: objController,
         obscureText: objObscureText,
         decoration: InputDecoration(
-          border: OutlineInputBorder(
+          border: const OutlineInputBorder(
             borderSide: BorderSide(width: 3),
           ),
           labelText: objLabel,
@@ -94,15 +93,14 @@ class _ProfilePage extends State<ProfilePage> {
 
   Widget interface() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget> [
-        Container(),
-        CInput(addressController, 'Address', 'x.x.x.x'),
-        CInput(portController, 'Port'),
-        CInput(usernameController, 'Username'),
-        CInput(passwordController, 'Password'),
-      ]
-    );
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Container(),
+          CInput(addressController, 'Address', 'x.x.x.x'),
+          CInput(portController, 'Port'),
+          CInput(usernameController, 'Username'),
+          CInput(passwordController, 'Password'),
+        ]);
   }
 
   void addProfileButtonAction() async {
@@ -117,7 +115,13 @@ class _ProfilePage extends State<ProfilePage> {
         passValid(pass)) {
       Map<dynamic, dynamic> jsonMap = jsonDecode(await readString());
       int lastId = jsonMap['lastId'];
-      Map newProfile = {"id": lastId+1, "addr": addr, "port": port, "username": username, pass: pass};
+      Map newProfile = {
+        "id": lastId + 1,
+        "addr": addr,
+        "port": port,
+        "username": username,
+        pass: pass
+      };
       jsonMap["profiles"].add(newProfile);
       jsonMap["lastId"] = jsonMap["lastId"] + 1;
       File jsonFile = await _localFile;
@@ -128,31 +132,30 @@ class _ProfilePage extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('SSH Profiles'),
-        backgroundColor: customColor,
-      ),
-      body: Column(
-        children: <Widget> [
+        appBar: AppBar(
+          title: const Text('SSH Profiles'),
+          backgroundColor: customColor,
+        ),
+        body: Column(children: <Widget>[
           Flexible(
             child: interface(),
           ),
           // add profile button
           Flexible(
             child: Center(
-              child: Ink(decoration:ShapeDecoration(color: customColor, shape:CircleBorder()),
-                child:IconButton(
-                iconSize:40,
-                onPressed: () => addProfileButtonAction(), 
-                icon: Icon(
-                  Icons.add,
-                  color:Colors.white,
-                ),
-              )
-            ),),
-          ), 
-        ]
-      )
-    );
+              child: Ink(
+                  decoration: ShapeDecoration(
+                      color: customColor, shape: CircleBorder()),
+                  child: IconButton(
+                    iconSize: 40,
+                    onPressed: () => addProfileButtonAction(),
+                    icon: const Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ),
+                  )),
+            ),
+          ),
+        ]));
   }
 }
