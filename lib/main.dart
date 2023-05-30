@@ -14,7 +14,7 @@ void main() {
 }
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePage();
@@ -128,9 +128,59 @@ class _HomePage extends State<HomePage> {
   }
 
   // returns specified file
+  /*
   Future<File> get _localFile async {
     final path = await _localPath;
+    bool fileExists = await File('$path/profile.json').exists();
+    File jsonFile = File('$path/profile.json');
+    String jsonString = await jsonFile.readAsString();
+    Map jsonMap = jsonDecode(jsonString);
+    if (!fileExists ||
+        jsonString.isEmpty ||
+        !jsonMap.containsKey("selected") ||
+        !jsonMap.containsKey("lastId") ||
+        !jsonMap.containsKey("profiles")) {
+      Map<dynamic, dynamic> jsonMap = {
+        "selected": 1,
+        "lastId": 8,
+        "profiles": []
+      };
+      jsonFile.writeAsString(jsonEncode(jsonMap));
+    }
     return File('$path/profile.json');
+  }
+  */
+  Future<File> get _localFile async {
+    String filePath = await _localPath;
+    final file = File('$filePath/profile.json');
+
+    bool fileExists = await file.exists();
+    if (!fileExists) {
+      Map<dynamic, dynamic> jsonData = {
+        "selected": 1,
+        "lastId": 8,
+        "profiles": []
+      };
+
+      await file.create(recursive: true);
+      await file.writeAsString(jsonEncode(jsonData));
+    } else {
+      final existingJsonData = jsonDecode(await file.readAsString());
+      Map<dynamic, dynamic> jsonData = {
+        "selected": 1,
+        "lastId": 8,
+        "profiles": []
+      };
+      if (!existingJsonData.containsKey('selected')) {
+        // await file.create(recursive: true);
+        await file.writeAsString(jsonEncode(jsonData));
+      }
+
+      // await file.create(recursive: true);
+      // await file.writeAsString(jsonEncode(jsonData));
+    }
+
+    return file;
   }
 
   // returns the contents of the specified file as String
@@ -149,7 +199,7 @@ class _HomePage extends State<HomePage> {
     var result = await readString();
     dynamic staticData = await jsonDecode(result)['profiles'];
     // dynamic staticData = await Profiles.data;
-    return await ListView.builder(
+    return ListView.builder(
       itemBuilder: (builder, index) {
         Map data = staticData[index];
         return profileListItem(data);
@@ -178,7 +228,7 @@ class _HomePage extends State<HomePage> {
               Navigator.of(context)
                   .push(
                 MaterialPageRoute(
-                  builder: (context) => ProfilePage(),
+                  builder: (context) => const ProfilePage(),
                 ),
               )
                   .then((e) {
@@ -215,7 +265,6 @@ class _HomePage extends State<HomePage> {
                   'Error: ${snapshot.error}'), // TODO when finishid change to Text("Could not load profiles");
             );
           } else {
-            child:
             const Padding(
               padding: EdgeInsets.only(top: 16),
               child: Text('Awaiting result...'),
@@ -238,7 +287,7 @@ class SMagic extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }

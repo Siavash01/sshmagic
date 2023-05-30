@@ -15,7 +15,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePage extends State<ProfilePage> {
-  Color customColor = Color.fromRGBO(80, 30, 55, 1);
+  Color customColor = const Color.fromRGBO(80, 30, 55, 1);
 
   // text controllers to read input from TextFields
   final TextEditingController addressController = TextEditingController();
@@ -56,9 +56,61 @@ class _ProfilePage extends State<ProfilePage> {
   }
 
   // returns specified file
+  /*
   Future<File> get _localFile async {
     final path = await _localPath;
+    bool fileExists = await File('$path/profile.json').exists();
+    File jsonFile = File('$path/profile.json');
+    String jsonString = await jsonFile.readAsString();
+    Map jsonMap = jsonDecode(jsonString);
+    if (!fileExists ||
+        jsonString.isEmpty ||
+        !jsonMap.containsKey("selected") ||
+        !jsonMap.containsKey("lastId") ||
+        !jsonMap.containsKey("profiles")) {
+      Map<dynamic, dynamic> jsonMap = {
+        "selected": 1,
+        "lastId": 8,
+        "profiles": []
+      };
+      jsonFile.writeAsString(jsonEncode(jsonMap));
+    }
     return File('$path/profile.json');
+  }
+  */
+  // getOrCreateJsonFile(String filePath, Map<String, dynamic> jsonData) async {
+
+  Future<File> get _localFile async {
+    String filePath = await _localPath;
+    final file = File('$filePath/profile.json');
+
+    bool fileExists = await file.exists();
+    if (!fileExists) {
+      Map<dynamic, dynamic> jsonData = {
+        "selected": 1,
+        "lastId": 8,
+        "profiles": []
+      };
+
+      await file.create(recursive: true);
+      await file.writeAsString(jsonEncode(jsonData));
+    } else {
+      final existingJsonData = jsonDecode(await file.readAsString());
+      Map<dynamic, dynamic> jsonData = {
+        "selected": 1,
+        "lastId": 8,
+        "profiles": []
+      };
+      if (!existingJsonData.containsKey('selected')) {
+        // await file.create(recursive: true);
+        await file.writeAsString(jsonEncode(jsonData));
+      }
+
+      // await file.create(recursive: true);
+      // await file.writeAsString(jsonEncode(jsonData));
+    }
+
+    return file;
   }
 
   // returns the contents of the specified file as String
@@ -74,7 +126,7 @@ class _ProfilePage extends State<ProfilePage> {
   }
 
   // Custom input
-  TextField CInput(TextEditingController objController,
+  TextField cInput(TextEditingController objController,
       [String? objLabel, String? objHint, bool? objObscureText]) {
     objLabel ??= '';
     objHint ??= '';
@@ -96,10 +148,10 @@ class _ProfilePage extends State<ProfilePage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Container(),
-          CInput(addressController, 'Address', 'x.x.x.x'),
-          CInput(portController, 'Port'),
-          CInput(usernameController, 'Username'),
-          CInput(passwordController, 'Password'),
+          cInput(addressController, 'Address', 'x.x.x.x'),
+          cInput(portController, 'Port'),
+          cInput(usernameController, 'Username'),
+          cInput(passwordController, 'Password'),
         ]);
   }
 
