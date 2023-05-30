@@ -118,7 +118,7 @@ class _ProfilePage extends State<ProfilePage> {
           cInput(addressController, 'Address', 'x.x.x.x'),
           cInput(portController, 'Port'),
           cInput(usernameController, 'Username'),
-          cInput(passwordController, 'Password', '', false),
+          cInput(passwordController, 'Password', '', true),
         ]);
   }
 
