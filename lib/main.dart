@@ -30,6 +30,12 @@ class _HomePage extends State<HomePage> {
 
   bool isConnected = false;
 
+  Map<dynamic, dynamic> initialJson = {
+    "selected": 0,
+    "lastId": 0,
+    "profiles": []
+  };
+
   Icon connectButtonIcon = const Icon(
     Icons.play_arrow,
     size: 40,
@@ -127,59 +133,26 @@ class _HomePage extends State<HomePage> {
     return directory.path;
   }
 
-  // returns specified file
-  /*
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    bool fileExists = await File('$path/profile.json').exists();
-    File jsonFile = File('$path/profile.json');
-    String jsonString = await jsonFile.readAsString();
-    Map jsonMap = jsonDecode(jsonString);
-    if (!fileExists ||
-        jsonString.isEmpty ||
-        !jsonMap.containsKey("selected") ||
-        !jsonMap.containsKey("lastId") ||
-        !jsonMap.containsKey("profiles")) {
-      Map<dynamic, dynamic> jsonMap = {
-        "selected": 1,
-        "lastId": 8,
-        "profiles": []
-      };
-      jsonFile.writeAsString(jsonEncode(jsonMap));
-    }
-    return File('$path/profile.json');
-  }
-  */
+  // returns specified file. if not exists or corrupted, creates it
   Future<File> get _localFile async {
     String filePath = await _localPath;
     final file = File('$filePath/profile.json');
 
     bool fileExists = await file.exists();
     if (!fileExists) {
-      Map<dynamic, dynamic> jsonData = {
-        "selected": 1,
-        "lastId": 8,
-        "profiles": []
-      };
+      Map<dynamic, dynamic> jsonData = initialJson;
 
       await file.create(recursive: true);
       await file.writeAsString(jsonEncode(jsonData));
     } else {
       final existingJsonData = jsonDecode(await file.readAsString());
-      Map<dynamic, dynamic> jsonData = {
-        "selected": 1,
-        "lastId": 8,
-        "profiles": []
-      };
-      if (!existingJsonData.containsKey('selected')) {
-        // await file.create(recursive: true);
+      Map<dynamic, dynamic> jsonData = initialJson;
+      if (!existingJsonData.containsKey('selected') ||
+          !existingJsonData.containsKey('lastId') ||
+          !existingJsonData.containsKey('profiles')) {
         await file.writeAsString(jsonEncode(jsonData));
       }
-
-      // await file.create(recursive: true);
-      // await file.writeAsString(jsonEncode(jsonData));
     }
-
     return file;
   }
 
