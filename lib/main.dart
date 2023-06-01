@@ -4,8 +4,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'profilepage.dart';
+import 'package:desktop_window/desktop_window.dart' as window_size;
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    window_size.DesktopWindow.setWindowSize(const Size(400, 600));
+    window_size.DesktopWindow.setMinWindowSize(const Size(400, 600));
+    window_size.DesktopWindow.setMaxWindowSize(const Size(400, 600));
+  }
+
   runApp(const SMagic());
 }
 
