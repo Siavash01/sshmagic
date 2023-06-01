@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter/foundation.dart';
-// import 'package:flutter/services.dart';
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
-// import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-// import 'profile.dart';
 import 'profilepage.dart';
 
 void main() {
-  runApp(SMagic());
+  runApp(const SMagic());
 }
 
 class HomePage extends StatefulWidget {
@@ -232,11 +228,11 @@ class _HomePage extends State<HomePage> {
           if (snapshot.hasData) {
             child = snapshot.data;
           } else if (snapshot.hasError) {
-            child = Padding(
-              padding: const EdgeInsets.only(top: 16),
-              child: Text(
-                  'Error: ${snapshot.error}'), // TODO when finishid change to Text("Could not load profiles");
-            );
+            child = const Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: Text(
+                  'Profiles data corrupted',
+                ));
           } else {
             const Padding(
               padding: EdgeInsets.only(top: 16),
@@ -255,6 +251,8 @@ class _HomePage extends State<HomePage> {
 }
 
 class SMagic extends StatelessWidget {
+  const SMagic({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

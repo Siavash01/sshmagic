@@ -139,7 +139,7 @@ class _ProfilePage extends State<ProfilePage> {
         "addr": addr,
         "port": port,
         "username": username,
-        pass: pass
+        "pass": pass
       };
       jsonMap["profiles"].add(newProfile);
       jsonMap["lastId"] = jsonMap["lastId"] + 1;
@@ -164,7 +164,7 @@ class _ProfilePage extends State<ProfilePage> {
             child: Center(
               child: Ink(
                   decoration: ShapeDecoration(
-                      color: customColor, shape: CircleBorder()),
+                      color: customColor, shape: const CircleBorder()),
                   child: IconButton(
                     iconSize: 40,
                     onPressed: () => addProfileButtonAction(),
