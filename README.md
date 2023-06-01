@@ -4,13 +4,13 @@ A useragent to perform ssh tunnel to given server
 
 ## Getting Started
 
-To user this, you need to install: sshuttle, sshpass
-after installing the dependencies run below command and put the result in /etc/sudoers.d/sshuttle_auto
+To use this, you need to install: sshuttle, sshpass <br />
+After installing the dependencies run below command and put the result in /etc/sudoers.d/sshuttle_auto <br />
 
 command:
-  sshuttle --sudoers-no-modify
+  sshuttle --sudoers-no-modify <br />
 
 Warning:
-  The tunnel is still running if you don't click stop button but close the application.
-  Please make sure to stop the tunnel before you close the application.
-  If you closed the application but did click the stop button, kill the sshuttle process in your task manager.
+  The tunnel would still be running if you don't click on the stop button.
+  Please make sure to click the stop button before closing the application.
+  If the application is closed, but stop button hasn't been clicked on, you should kill the sshuttle process in your task manager.
